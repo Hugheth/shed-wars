@@ -1,0 +1,38 @@
+{
+  "name": "Shed Wars",
+  "tree": {
+    "$className": "DataModel",
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Brightness": 2.0,
+        "Ambient": [0.0, 0.0, 0.0],
+        "Technology": "Voxel",
+        "Outlines": false,
+        "GlobalShadows": true
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$path": "src/Install"
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "GameKits": {
+        "$path": "src/GameKits"
+      }
+    },
+    "SoundService": {
+      "$className": "SoundService",
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}
