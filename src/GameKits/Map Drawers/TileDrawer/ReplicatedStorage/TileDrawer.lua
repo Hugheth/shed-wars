@@ -6,34 +6,37 @@ local function getKey(cell)
 	return cell.X .. "," .. cell.Y
 end
 
-function MazeDrawer.drawMaze(options)
+function MazeDrawer.drawTiles(options)
+	-- Ensure that the inputs are valid
 	local maze = options.maze
-	assert(type(maze) == "table", "Maze must be a table with walls, width and height")
+	assert(type(maze) == "table", "Maze must be a table with walls, sizeX and sizeY")
 
-	local width = maze.width
-	local height = maze.height
+	local sizeX = maze.sizeX
+	local sizeY = maze.sizeY
 	local walls = maze.walls
 
-	assert(type(width) == "number" and width > 0, "The width of the maze must be a positive integer")
-	assert(type(height) == "number" and height > 0, "The height of the maze must be a positive integer")
+	assert(type(sizeX) == "number" and sizeX > 0, "The sizeX of the maze must be a positive integer")
+	assert(type(sizeY) == "number" and sizeY > 0, "The sizeY of the maze must be a positive integer")
 	assert(type(walls) == "table", "The walls of the maze must be a table")
 
 	local name = options.name
 	local templates = options.templates
-	local cellWidth = options.cellWidth
-	local cellHeight = options.cellHeight
+	local tileSizeX = options.tileSizeX
+	local tileSizeY = options.tileSizeY
+	local position = options.position or Vector3.new(0, 0, 0)
 
 	assert(typeof(templates) == "Instance" and templates:IsA("Folder"), "The templates must be a Folder")
-	assert(type(cellWidth) == "number" and cellWidth > 0, "The cellWidth must be a positive integer")
-	assert(type(cellHeight) == "number" and cellHeight > 0, "The cellHeight must be a positive integer")
+	assert(type(tileSizeX) == "number" and tileSizeX > 0, "The tileSizeX must be a positive integer")
+	assert(type(tileSizeY) == "number" and tileSizeY > 0, "The tileSizeY must be a positive integer")
+	assert(typeof(position) == "Vector3", "The position must be a Vector3")
 	assert(type(name) == "string", "Name must be a string")
 
-	local model = Instance.new("Model")
-	model.Name = name
+	local folder = Instance.new("Folder")
+	folder.Name = name
 
 	-- Iterate through every cell in the maze
-	for i = 1, width do
-		for j = 1, height do
+	for i = 1, sizeX do
+		for j = 1, sizeY do
 			-- Make a list of the walls surrounding the cell
 			local cellWalls = {}
 			local cell = Vector2.new(i, j)
@@ -45,33 +48,37 @@ function MazeDrawer.drawMaze(options)
 				local isWall = walls[wallKey] ~= false
 				table.insert(cellWalls, isWall)
 			end
-			-- Get a tile to use for this maze cell
-			local tile = MazeDrawer.chooseTile(templates, cellWalls)
-			-- Clone it and position it in the model
-			local tilePosition = CFrame.new(i * cellWidth, 0, j * cellHeight)
-			local primaryPart = tile.PrimaryPart
-			local tileRotation = primaryPart.CFrame - primaryPart.Position
-			tile:SetPrimaryPartCFrame(tilePosition * tileRotation)
-			tile.Parent = model
-
-			-- Set the first tile to the model's primary part
-			if i == 0 and j == 0 then
-				model.PrimaryPart = tile
+			local isEmpty = maze.map and maze.map[i][j] == false
+			if not isEmpty then
+				-- Get a tile to use for this maze cell
+				local tile = MazeDrawer.chooseTile(templates, cellWalls)
+				-- Clone it and position it in the folder
+				local tilePosition = CFrame.new(i * tileSizeX, 0, j * tileSizeY) + position
+				print("Position!", tilePosition)
+				local primaryPart = tile.PrimaryPart
+				-- Preserve the rotation of the part when we move it
+				local tileRotation = primaryPart.CFrame - primaryPart.Position
+				tile:SetPrimaryPartCFrame(tilePosition * tileRotation)
+				tile.Parent = folder
 			end
 		end
 	end
 
-	return model
+	return folder
 end
 
 function MazeDrawer.chooseTile(templates, cellWalls)
 	-- Count the number of walls surrounding the cell to work out what type of tile to draw
 	local wallCount = MazeDrawer.getWallCount(cellWalls)
 	if wallCount == 0 then
+		-- A crossroads tile has no walls
 		return MazeDrawer.getTileFromTemplate(templates, "Crossroads")
 	elseif wallCount == 1 then
+		-- A junction tile has one wall
 		return MazeDrawer.chooseJunction(templates, cellWalls)
 	elseif wallCount == 2 then
+		-- A corner tile or straight tile has two walls
+		-- Check if the walls make a horizontal or vertical straight tile
 		local isVertical = cellWalls[1] and cellWalls[3]
 		local isHorizontal = cellWalls[2] and cellWalls[4]
 		if isVertical or isHorizontal then
@@ -80,14 +87,17 @@ function MazeDrawer.chooseTile(templates, cellWalls)
 			return MazeDrawer.chooseCorner(templates, cellWalls)
 		end
 	elseif wallCount == 3 then
+		-- An ending tile has a 3 walls
 		return MazeDrawer.chooseEnding(templates, cellWalls)
 	else
+		-- A ground tile has 4 walls
 		return MazeDrawer.getTileFromTemplate(templates, "Ground")
 	end
 end
 
 function MazeDrawer.getWallCount(cellWalls)
 	local wallCount = 0
+	-- Count the number of true values in th cellWalls list
 	for index, isWall in ipairs(cellWalls) do
 		if isWall then
 			wallCount = wallCount + 1

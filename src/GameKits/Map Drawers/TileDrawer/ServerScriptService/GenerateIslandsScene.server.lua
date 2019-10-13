@@ -1,0 +1,43 @@
+-- local CaveGenerator = require(game.ReplicatedStorage.CaveGenerator)
+-- local TileDrawer = require(game.ReplicatedStorage.TileDrawer)
+-- local HeightMapGenerator = require(game.ReplicatedStorage.HeightMapGenerator)
+-- local sizeX = 24
+-- local sizeY = 24
+-- local cave =
+-- 	CaveGenerator.generateCave(
+-- 	{
+-- 		sizeX = sizeX,
+-- 		sizeY = sizeY
+-- 	}
+-- )
+-- local tiles =
+-- 	TileDrawer.drawTiles(
+-- 	{
+-- 		maze = cave,
+-- 		tileSizeX = 32,
+-- 		tileSizeY = 32,
+-- 		position = Vector3.new(0, 0, -100),
+-- 		name = "My Island",
+-- 		templates = game.ServerStorage.RoadTiles
+-- 	}
+-- )
+-- local height =
+-- 	HeightMapGenerator.generateMap(
+-- 	{
+-- 		sizeX = sizeX,
+-- 		sizeY = sizeY
+-- 	}
+-- )
+-- tiles.Parent = game.Workspace
+-- local x = 1
+-- local y = 1
+-- for _, tile in ipairs(tiles:GetChildren()) do
+-- 	local cframe = tile:GetPrimaryPartCFrame()
+-- 	local heightOffset = Vector3.new(0, height.map[x][y] * 5, 0)
+-- 	tile:SetPrimaryPartCFrame(cframe + heightOffset)
+-- 	x = x + 1
+-- 	if x > sizeX then
+-- 		x = 1
+-- 		y = y + 1
+-- 	end
+-- end
