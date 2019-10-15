@@ -42,22 +42,31 @@ function BuildingDrawer.drawBuilding(options)
 		-- Iterate through each room
 		for i = 1, floor.sizeX do
 			for j = 1, floor.sizeY do
-				local room = BuildingDrawer.drawRoom(options, floorNumber, i, j)
-				room.Parent = floorFolder
+				local isEmpty = floor.map and floor.map[i][j] == false
+				if not isEmpty then
+					local room = BuildingDrawer.drawRoom(options, floorNumber, i, j)
+					room.Parent = floorFolder
+				end
 			end
 		end
 		-- Draw the exterior walls
 		for i = 1, floor.sizeX do
-			local roomPosition =
-				Vector3.new((i - 1) * options.tileSizeX, (floorNumber - 1) * options.floorHeight, floor.sizeY * options.tileSizeY)
-			local horizontalWall = BuildingDrawer.drawHorizontalWall(options, floorNumber, i, floor.sizeY + 1, roomPosition)
-			horizontalWall.Parent = folder
+			local isEmpty = floor.map and floor.map[i][floor.sizeY] == false
+			if not isEmpty then
+				local roomPosition =
+					Vector3.new((i - 1) * options.tileSizeX, (floorNumber - 1) * options.floorHeight, floor.sizeY * options.tileSizeY)
+				local horizontalWall = BuildingDrawer.drawHorizontalWall(options, floorNumber, i, floor.sizeY + 1, roomPosition)
+				horizontalWall.Parent = folder
+			end
 		end
 		for j = 1, floor.sizeY do
-			local roomPosition =
-				Vector3.new(floor.sizeX * options.tileSizeX, (floorNumber - 1) * options.floorHeight, (j - 1) * options.tileSizeY)
-			local verticalWall = BuildingDrawer.drawVerticalWall(options, floorNumber, floor.sizeX + 1, j, roomPosition)
-			verticalWall.Parent = folder
+			local isEmpty = floor.map and floor.map[floor.sizeX][j] == false
+			if not isEmpty then
+				local roomPosition =
+					Vector3.new(floor.sizeX * options.tileSizeX, (floorNumber - 1) * options.floorHeight, (j - 1) * options.tileSizeY)
+				local verticalWall = BuildingDrawer.drawVerticalWall(options, floorNumber, floor.sizeX + 1, j, roomPosition)
+				verticalWall.Parent = folder
+			end
 		end
 		floorFolder.Parent = folder
 	end

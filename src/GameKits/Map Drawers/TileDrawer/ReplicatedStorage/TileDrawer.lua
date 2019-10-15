@@ -54,7 +54,6 @@ function MazeDrawer.drawTiles(options)
 				local tile = MazeDrawer.chooseTile(templates, cellWalls)
 				-- Clone it and position it in the folder
 				local tilePosition = CFrame.new(i * tileSizeX, 0, j * tileSizeY) + position
-				print("Position!", tilePosition)
 				local primaryPart = tile.PrimaryPart
 				-- Preserve the rotation of the part when we move it
 				local tileRotation = primaryPart.CFrame - primaryPart.Position

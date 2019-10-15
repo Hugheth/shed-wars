@@ -14,11 +14,11 @@
 -- 	TileDrawer.drawTiles(
 -- 	{
 -- 		maze = cave,
--- 		tileSizeX = 32,
--- 		tileSizeY = 32,
+-- 		tileSizeX = 16,
+-- 		tileSizeY = 16,
 -- 		position = Vector3.new(0, 0, -100),
 -- 		name = "My Island",
--- 		templates = game.ServerStorage.RoadTiles
+-- 		templates = game.ServerStorage.IslandTiles
 -- 	}
 -- )
 -- local height =
@@ -33,7 +33,7 @@
 -- local y = 1
 -- for _, tile in ipairs(tiles:GetChildren()) do
 -- 	local cframe = tile:GetPrimaryPartCFrame()
--- 	local heightOffset = Vector3.new(0, height.map[x][y] * 5, 0)
+-- 	local heightOffset = Vector3.new(0, height.map[x][y], 0)
 -- 	tile:SetPrimaryPartCFrame(cframe + heightOffset)
 -- 	x = x + 1
 -- 	if x > sizeX then

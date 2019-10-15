@@ -11,11 +11,17 @@
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
-        "Brightness": 2.0,
-        "Ambient": [0.0, 0.0, 0.0],
+        "Brightness": 10.0,
+        "ColorShift_Top": [254, 187, 165],
         "Technology": "Voxel",
         "Outlines": false,
-        "GlobalShadows": true
+        "GlobalShadows": true,
+        "FogColor": [28, 29, 44],
+        "FogEnd": 200,
+        "TimeOfDay": "04:00:00",
+        "ExposureCompensation": 1,
+        "Ambient": [124, 145, 138],
+        "OutdoorAmbient": [100, 93, 102]
       }
     },
     "ServerScriptService": {
