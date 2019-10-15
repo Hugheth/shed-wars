@@ -6,6 +6,10 @@ local targets = {
 	{
 		name = "ServerScriptService",
 		folder = game.ServerScriptService
+	},
+	{
+		name = "StarterPlayerScripts",
+		folder = game.StarterPlayer.StarterPlayerScripts
 	}
 }
 

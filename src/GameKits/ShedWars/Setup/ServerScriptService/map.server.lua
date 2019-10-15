@@ -1,73 +1,145 @@
 local CaveGenerator = require(game.ReplicatedStorage.CaveGenerator)
 local TileDrawer = require(game.ReplicatedStorage.TileDrawer)
 local HeightMapGenerator = require(game.ReplicatedStorage.HeightMapGenerator)
-local sizeX = 24
-local sizeY = 24
-local cave =
-	CaveGenerator.generateCave(
-	{
-		sizeX = sizeX,
-		sizeY = sizeY,
-		density = 0.3
-	}
-)
-local tiles =
-	TileDrawer.drawTiles(
-	{
-		maze = cave,
-		tileSizeX = 16,
-		tileSizeY = 16,
-		position = Vector3.new(-192, 0, -192),
-		name = "My Island",
-		templates = game.ServerStorage.SwampTiles
-	}
-)
-local height =
-	HeightMapGenerator.generateMap(
-	{
-		sizeX = sizeX,
-		sizeY = sizeY
-	}
-)
-tiles.Parent = game.Workspace
-local x = 1
-local y = 1
-local minHeight = math.huge
-local maxHeight = -math.huge
-for _, tile in ipairs(tiles:GetChildren()) do
-	local cframe = tile:GetPrimaryPartCFrame()
-	local heightOffset = Vector3.new(0, height.map[x][y] / 2 + 7, 0)
-	minHeight = math.min(minHeight, height.map[x][y])
-	maxHeight = math.max(maxHeight, height.map[x][y])
-	tile:SetPrimaryPartCFrame(cframe + heightOffset)
-	x = x + 1
-	if x > sizeX then
-		x = 1
-		y = y + 1
+local MazeGenerator = require(game.ReplicatedStorage.MazeGenerator)
+local LightManager = require(game.ReplicatedStorage.LightManager)
+local BuildingDrawer = require(game.ReplicatedStorage.BuildingDrawer)
+
+local function drawIsland()
+	local islandSizeX = 24
+	local islandSizeY = 24
+	local cave =
+		CaveGenerator.generateCave(
+		{
+			sizeX = islandSizeX,
+			sizeY = islandSizeY,
+			density = 0.3
+		}
+	)
+	local tiles =
+		TileDrawer.drawTiles(
+		{
+			maze = cave,
+			tileSizeX = 16,
+			tileSizeY = 16,
+			name = "Island",
+			templates = game.ServerStorage.SwampTiles
+		}
+	)
+	local height =
+		HeightMapGenerator.generateMap(
+		{
+			sizeX = islandSizeX,
+			sizeY = islandSizeY
+		}
+	)
+	tiles.Parent = game.Workspace
+
+	local x = 1
+	local y = 1
+	for _, tile in ipairs(tiles:GetChildren()) do
+		local cframe = tile:GetPrimaryPartCFrame()
+		local heightOffset = Vector3.new(0, height.map[x][y] / 2 + 5, 0)
+		tile:SetPrimaryPartCFrame(cframe + heightOffset)
+		x = x + 1
+		if x > islandSizeX then
+			x = 1
+			y = y + 1
+		end
 	end
 end
 
-print("Heights", minHeight, maxHeight)
+local plotSizeX = 5
+local plotSizeY = 5
+local walkwaySize = 60
+local roomSize = 20
 
-local MazeGenerator = require(game.ReplicatedStorage.MazeGenerator)
-local maze =
-	MazeGenerator.generateMaze(
-	{
-		sizeX = 5,
-		sizeY = 5,
-		branchingChance = 0.3
-	}
-)
-print(MazeGenerator.printMaze(maze))
-local walkway =
-	TileDrawer.drawTiles(
-	{
-		maze = maze,
-		tileSizeX = 60,
-		tileSizeY = 60,
-		position = Vector3.new(-150, 0, -150),
-		name = "Walkway",
-		templates = game.ServerStorage.WalkwayTiles
-	}
-)
-walkway.Parent = game.Workspace
+local function drawWalkway()
+	local maze =
+		MazeGenerator.generateMaze(
+		{
+			sizeX = plotSizeX + 1,
+			sizeY = plotSizeY + 1,
+			branchingChance = 0.3
+		}
+	)
+	local walkway =
+		TileDrawer.drawTiles(
+		{
+			maze = maze,
+			tileSizeX = walkwaySize,
+			tileSizeY = walkwaySize,
+			name = "Walkway",
+			templates = game.ServerStorage.WalkwayTiles
+		}
+	)
+	walkway.Parent = game.Workspace
+	return walkway
+end
+
+local function drawBuilding(x, y)
+	local foundation = game.ServerStorage.Foundation
+	local position = Vector3.new(x * walkwaySize, 0, y * walkwaySize)
+	for i = 1, 2 do
+		for j = 1, 2 do
+			local tile = foundation:Clone()
+			tile:SetPrimaryPartCFrame(CFrame.new(position + Vector3.new(i * roomSize, 0, j * roomSize)))
+			tile.Parent = game.Workspace
+		end
+	end
+
+	local height = math.random(1, 5)
+	local floors = {}
+	for i = 1, height do
+		table.insert(
+			floors,
+			MazeGenerator.generateMaze(
+				{
+					sizeX = 2,
+					sizeY = 2,
+					branchingChance = 0.5
+				}
+			)
+		)
+	end
+	local buildingOffset = Vector3.new(roomSize, 24, roomSize)
+	local building =
+		BuildingDrawer.drawBuilding(
+		{
+			floors = floors,
+			tileSizeX = 20,
+			tileSizeY = 20,
+			floorHeight = 16,
+			interiorWallChance = 0.2,
+			position = position + buildingOffset,
+			name = "Shed (" .. x .. "," .. y .. ")",
+			templates = game.ServerStorage.ShedSet
+		}
+	)
+	if y < 3 then
+		LightManager.setColor(building, "Light", Color3.fromRGB(136, 1, 20))
+	elseif y == 3 then
+		LightManager.setColor(building, "Light", Color3.fromRGB(180, 180, 180))
+	else
+		LightManager.setColor(building, "Light", Color3.fromRGB(20, 136, 1))
+	end
+	return building
+end
+
+local function drawBuildings()
+	local buildings = Instance.new("Folder")
+	buildings.Name = "Buildings"
+	for i = 1, plotSizeX do
+		for j = 1, plotSizeY do
+			local building = drawBuilding(i, j)
+			building.Parent = buildings
+		end
+	end
+	buildings.Parent = game.Workspace
+end
+
+drawIsland()
+local walkway = drawWalkway()
+drawBuildings()
+
+LightManager.setColor(walkway, "Light", Color3.fromRGB(180, 180, 180))

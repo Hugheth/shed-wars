@@ -13,12 +13,12 @@ function BuildingDrawer.drawBuilding(options)
 	options.random = options.random or Random.new()
 	options.tileFillChance = options.tileFillChance or 0.5
 	options.interiorWallChance = options.interiorWallChance or 0.5
-	options.wallSize = options.wallSize or 1
+
+	options.position = options.position or Vector3.new(0, 0, 0)
 
 	assert(typeof(templates) == "Instance" and templates:IsA("Folder"), "The templates must be a Folder")
 	assert(type(tileSizeX) == "number" and tileSizeX > 0, "The tileSizeX must be a positive integer")
 	assert(type(tileSizeY) == "number" and tileSizeY > 0, "The tileSizeY must be a positive integer")
-	assert(type(options.wallSize) == "number" and options.wallSize > 0, "The wallSize must be a positive integer")
 	assert(
 		type(options.interiorWallChance) == "number" and options.interiorWallChance >= 0 and options.interiorWallChance <= 1,
 		"The interiorWallChance must be a number between 0 and 1"
@@ -141,10 +141,9 @@ function BuildingDrawer.drawHorizontalWall(options, floorNumber, x, y, roomPosit
 	end
 
 	local horizontalWall = BuildingDrawer.getTileFromTemplate(options.templates, tileName, options.random)
-	local wallPosition =
-		roomPosition + Vector3.new(0, options.floorHeight / 2, options.wallSize / 2 - options.tileSizeY / 2)
-	local wallRotation = CFrame.Angles(0, math.rad(90), 0)
-	horizontalWall:SetPrimaryPartCFrame(CFrame.new(wallPosition) * wallRotation)
+	local wallPosition = roomPosition + Vector3.new(0, options.floorHeight / 2, -options.tileSizeY / 2)
+	local wallRotation = CFrame.Angles(0, 0, 0)
+	horizontalWall:SetPrimaryPartCFrame(CFrame.new(wallPosition + options.position) * wallRotation)
 	return horizontalWall, isDoor
 end
 
@@ -170,9 +169,9 @@ function BuildingDrawer.drawVerticalWall(options, floorNumber, x, y, roomPositio
 	end
 
 	local verticalWall = BuildingDrawer.getTileFromTemplate(options.templates, tileName, options.random)
-	local wallPosition =
-		roomPosition + Vector3.new(options.wallSize / 2 - options.tileSizeX / 2, options.floorHeight / 2, 0)
-	verticalWall:SetPrimaryPartCFrame(CFrame.new(wallPosition))
+	local wallPosition = roomPosition + Vector3.new(-options.tileSizeX / 2, options.floorHeight / 2, 0)
+	local wallRotation = CFrame.Angles(0, math.rad(270), 0)
+	verticalWall:SetPrimaryPartCFrame(CFrame.new(wallPosition + options.position) * wallRotation)
 	return verticalWall, isDoor
 end
 
@@ -192,14 +191,14 @@ function BuildingDrawer.drawTile(options, floorNumber, x, y, roomPosition, isFil
 	end
 
 	local tile = BuildingDrawer.getTileFromTemplate(options.templates, templateName, options.random)
-	tile:SetPrimaryPartCFrame(CFrame.new(roomPosition))
+	tile:SetPrimaryPartCFrame(CFrame.new(roomPosition + options.position))
 
 	local ceilingTile
 	if hasCeiling then
 		-- Pick a ceiling
 		ceilingTile = BuildingDrawer.getTileFromTemplate(options.templates, "Ceiling", options.random)
 		local ceilingPosition = roomPosition + Vector3.new(0, options.floorHeight - 0.5, 0)
-		ceilingTile:SetPrimaryPartCFrame(CFrame.new(ceilingPosition))
+		ceilingTile:SetPrimaryPartCFrame(CFrame.new(ceilingPosition + options.position))
 	end
 
 	return tile, ceilingTile

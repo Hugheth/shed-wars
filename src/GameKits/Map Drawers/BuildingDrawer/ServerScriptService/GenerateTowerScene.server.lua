@@ -19,7 +19,6 @@
 -- 		floors = floors,
 -- 		tileSizeX = 16,
 -- 		tileSizeY = 16,
--- 		wallSize = 1,
 -- 		floorHeight = 16,
 -- 		interiorWallChance = 0.2,
 -- 		name = "My Building",

@@ -12,16 +12,16 @@
       "$className": "Lighting",
       "$properties": {
         "Brightness": 10.0,
-        "ColorShift_Top": [254, 187, 165],
+        "ColorShift_Top": [0.99, 0.73, 0.644],
         "Technology": "Voxel",
         "Outlines": false,
         "GlobalShadows": true,
-        "FogColor": [28, 29, 44],
-        "FogEnd": 200,
+        "FogColor": [0.109, 0.113, 0.172],
+        "FogEnd": 300,
         "TimeOfDay": "04:00:00",
         "ExposureCompensation": 1,
-        "Ambient": [124, 145, 138],
-        "OutdoorAmbient": [100, 93, 102]
+        "Ambient": [0.48, 0.566, 0.532],
+        "OutdoorAmbient": [0.391, 0.363, 0.398]
       }
     },
     "ServerScriptService": {
