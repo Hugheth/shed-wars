@@ -7,7 +7,7 @@ local VitalFrame = VitalsOverlay.Frame.VitalFrame
 VitalFrame.Parent = nil
 
 local PADDING = 10
-local SPACING = 20
+local SPACING = 10
 
 function VitalsClient.setup(names)
 	VitalsClient.names = names
@@ -26,20 +26,27 @@ function VitalsClient.setup(names)
 		)
 	end
 
+	local valueSize = 45
+
 	for _, name in ipairs(names) do
 		local frame = VitalFrame:Clone()
 		local size = TextService:GetTextSize(name, textSize, font, Vector2.new(math.huge, textSize))
+		frame.Name = name
 		frame.VitalName.Size = UDim2.new(0, size.X, 0, size.Y)
 		frame.VitalName.Text = name
-		frame.VitalValue.Size = UDim2.new(0, 100, 0, size.Y)
-		frame.VitalValue.Position = UDim2.new(0, size.X + PADDING, 0, 0)
-		local frameWidth = size.X + 100 + 3 * PADDING
+		frame.VitalValue.Size = UDim2.new(0, valueSize, 0, size.Y)
+		frame.VitalValue.Position = UDim2.new(0, size.X + 2 * PADDING, 0, PADDING)
+
+		local frameWidth = size.X + valueSize + 3 * PADDING
 		frame.Size = UDim2.new(0, frameWidth, 0, size.Y + 2 * PADDING)
+		frame.Position = UDim2.new(0, offset, 0, 0)
 		offset = offset + frameWidth + SPACING
-		frame.Parent = 	
+		frame.Parent = VitalsOverlay.Frame
 
 		initializeValue(frame, name)
 	end
+
+	VitalsOverlay.Enabled = true
 end
 
 return VitalsClient
