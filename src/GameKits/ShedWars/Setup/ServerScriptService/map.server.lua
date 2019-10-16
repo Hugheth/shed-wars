@@ -116,12 +116,13 @@ local function drawBuilding(x, y)
 			templates = game.ServerStorage.ShedSet
 		}
 	)
+	local lights = LightManager.findLights(building)
 	if y < 3 then
-		LightManager.setColor(building, "Light", Color3.fromRGB(136, 1, 20))
+		LightManager.setColor(lights, Color3.fromRGB(136, 1, 20))
 	elseif y == 3 then
-		LightManager.setColor(building, "Light", Color3.fromRGB(180, 180, 180))
+		LightManager.setColor(lights, Color3.fromRGB(180, 180, 180))
 	else
-		LightManager.setColor(building, "Light", Color3.fromRGB(20, 136, 1))
+		LightManager.setColor(lights, Color3.fromRGB(20, 136, 1))
 	end
 	return building
 end
@@ -142,4 +143,5 @@ drawIsland()
 local walkway = drawWalkway()
 drawBuildings()
 
-LightManager.setColor(walkway, "Light", Color3.fromRGB(180, 180, 180))
+local lights = LightManager.findLights(walkway)
+LightManager.setColor(lights, Color3.fromRGB(180, 180, 180))

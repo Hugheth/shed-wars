@@ -4,49 +4,52 @@ local LightManager = {
 	pulsating = {}
 }
 
-function LightManager.turnOff(root, name)
+function LightManager.findLights(root, name)
+	name = name or "Light"
+	local lights = {}
 	for _, object in ipairs(root:GetDescendants()) do
 		if object.Name == name then
-			LightManager.colors[object] = object.Color
-			object.Color = Color3.fromRGB(60, 60, 60)
-			object.PointLight.Enabled = false
+			table.insert(lights, object)
 		end
+	end
+	return lights
+end
+
+function LightManager.turnOff(lights)
+	for _, light in ipairs(lights) do
+		LightManager.colors[light] = light.Color
+		light.Color = Color3.fromRGB(60, 60, 60)
+		light.PointLight.Enabled = false
 	end
 end
 
-function LightManager.turnOn(root, name)
-	for _, object in ipairs(root:GetDescendants()) do
-		if object.Name == name then
-			object.Color = LightManager.colors[object]
-			object.PointLight.Color = LightManager.colors[object]
-			object.PointLight.Enabled = true
-		end
+function LightManager.turnOn(lights)
+	for _, light in ipairs(lights) do
+		light.Color = LightManager.colors[light]
+		light.PointLight.Color = LightManager.colors[light]
+		light.PointLight.Enabled = true
 	end
 end
 
-function LightManager.setColor(root, name, color)
-	for _, object in ipairs(root:GetDescendants()) do
-		if object.Name == name then
-			LightManager.colors[object] = color
-			object.Color = color
-		end
+function LightManager.setColor(lights, color)
+	for _, light in ipairs(lights) do
+		LightManager.colors[light] = color
+		light.Color = color
 	end
 end
 
-function LightManager.pulsate(root, name)
+function LightManager.pulsate(lights)
 	if not LightManager.hasLightPulsator then
 		LightManager.addLightPulsator()
 	end
-	for _, object in ipairs(root:GetDescendants()) do
-		if object.Name == name then
-			LightManager.colors[object] = object.Color
-			LightManager.pulsating[object] = {
-				duration = 3,
-				minBrightness = 0,
-				maxBrightness = 5,
-				offset = math.random()
-			}
-		end
+	for _, light in ipairs(lights) do
+		LightManager.colors[light] = light.Color
+		LightManager.pulsating[light] = {
+			duration = 3,
+			minBrightness = 0,
+			maxBrightness = 5,
+			offset = math.random()
+		}
 	end
 end
 

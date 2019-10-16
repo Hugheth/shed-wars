@@ -4,6 +4,10 @@ local targets = {
 		folder = game.ReplicatedStorage
 	},
 	{
+		name = "ReplicatedFirst",
+		folder = game.ReplicatedFirst
+	},
+	{
 		name = "ServerScriptService",
 		folder = game.ServerScriptService
 	},
