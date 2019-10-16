@@ -1,13 +1,15 @@
 local WelcomeMessage = require(game.ReplicatedStorage.WelcomeMessage)
-local TeamManagerClient = require(game.ReplicatedStorage.TeamManagerClient)
+local TeamsClient = require(game.ReplicatedStorage.TeamsClient)
+local LobbyClient = require(game.ReplicatedStorage.LobbyClient)
+local VitalsClient = require(game.ReplicatedStorage.VitalsClient)
 
-TeamManagerClient.showDialog()
+TeamsClient.showDialog()
 
-TeamManagerClient.onChangeTeam = function(teamName)
+TeamsClient.onTeamChange = function(teamName)
 	if teamName == "Red Ranchers" then
 		WelcomeMessage.show(
 			{
-				"You joined Red! The greens will feel the fury of my axe!",
+				"You joined Red! The greens will feel the fury of your axe!",
 				"You joined Red! Grab your axe Red, you'll need it!",
 				"You joined Red! Feeling lucky today hey Red?"
 			}
@@ -15,7 +17,7 @@ TeamManagerClient.onChangeTeam = function(teamName)
 	else
 		WelcomeMessage.show(
 			{
-				"You joined Green! The reds will feel the fury of my axe!",
+				"You joined Green! The reds will feel the fury of your axe!",
 				"You joined Green! Grab your axe Green, you'll need it!",
 				"You joined Green! Feeling lucky today hey Green?"
 			}
@@ -24,4 +26,12 @@ TeamManagerClient.onChangeTeam = function(teamName)
 end
 
 WelcomeMessage.onClose = function()
+	if LobbyClient.inGame then
+		WelcomeMessage.show({"You are currently spectating!"})
+	else
+		LobbyClient.showDialog()
+	end
 end
+
+LobbyClient.setup()
+VitalsClient.setup({"Life", "Wood", "Metal"})

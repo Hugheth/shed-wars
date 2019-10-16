@@ -2,18 +2,18 @@ local Teams = game:GetService("Teams")
 local Players = game:GetService("Players")
 local TeamDialog =
 	game.Players.LocalPlayer.PlayerGui:WaitForChild("TeamDialog", 10) or
-	error("TeamManager couldn't start because TeamDialog is missing from StarterGui")
+	error("TeamsClient couldn't start because TeamDialog is missing from StarterGui")
 local RequestChangeTeam =
 	game.ReplicatedStorage:WaitForChild("RequestChangeTeam", 10) or
-	error("TeamManager couldn't start because RequestChangeTeam is missing from ReplicatedStorage")
+	error("TeamsClient couldn't start because RequestChangeTeam is missing from ReplicatedStorage")
 
-local TeamManager = {}
+local TeamsClient = {}
 
 local AUTOMATIC = "Automatic"
 local SPACING = 10
 local PADDING = 20
 
-function TeamManager.showDialog()
+function TeamsClient.showDialog()
 	local contents = TeamDialog.Frame.ContentFrame
 	local label = contents.TeamButton
 	label.Visible = false
@@ -26,7 +26,7 @@ function TeamManager.showDialog()
 	end
 
 	local function onClick(teamName)
-		TeamManager.selectedTeam = teamName
+		TeamsClient.selectedTeam = teamName
 		deselectLabels()
 		contents[teamName].BackgroundTransparency = 0
 	end
@@ -58,7 +58,7 @@ function TeamManager.showDialog()
 	TeamDialog.Enabled = true
 end
 
-function TeamManager.hideDialog()
+function TeamsClient.hideDialog()
 	TeamDialog.Enabled = false
 	local contents = TeamDialog.Frame.ContentFrame
 	contents[AUTOMATIC]:Destroy()
@@ -67,21 +67,21 @@ function TeamManager.hideDialog()
 	end
 end
 
-function TeamManager.chooseTeam()
-	local teamName = TeamManager.selectedTeam
+function TeamsClient.chooseTeam()
+	local teamName = TeamsClient.selectedTeam
 
 	if teamName == AUTOMATIC then
-		teamName = TeamManager.autoAssignTeam()
+		teamName = TeamsClient.autoAssignTeam()
 	end
 
 	RequestChangeTeam:InvokeServer(teamName)
 
-	if TeamManager.onChangeTeam then
-		TeamManager.onChangeTeam(teamName)
+	if TeamsClient.onTeamChange then
+		TeamsClient.onTeamChange(teamName)
 	end
 end
 
-function TeamManager.autoAssignTeam()
+function TeamsClient.autoAssignTeam()
 	local teamCounts = {}
 	for _, team in ipairs(Teams:GetChildren()) do
 		teamCounts[team.Name] = 0
@@ -104,12 +104,12 @@ function TeamManager.autoAssignTeam()
 end
 
 local function handleClose()
-	TeamManager.hideDialog()
-	TeamManager.chooseTeam()
-	if TeamManager.onClose then
-		TeamManager.onClose()
+	TeamsClient.hideDialog()
+	TeamsClient.chooseTeam()
+	if TeamsClient.onClose then
+		TeamsClient.onClose()
 	end
 end
 TeamDialog.Frame.JoinButton.MouseButton1Click:Connect(handleClose)
 
-return TeamManager
+return TeamsClient

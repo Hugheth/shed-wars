@@ -1,10 +1,5 @@
 local PlayerStats = {}
 
-function PlayerStats.setup(columns, defaultValues)
-	PlayerStats.columns = columns
-	PlayerStats.defaultValues = defaultValues
-end
-
 function PlayerStats.setStat(player, name, value)
 	player.leaderstats[name].Value = value
 end
@@ -13,7 +8,7 @@ function PlayerStats.getStat(player, name)
 	return player.leaderstats[name].Value
 end
 
-local function onJoin(player)
+function PlayerStats.onJoin(player)
 	local leaderstats = Instance.new("Folder")
 	leaderstats.Name = "leaderstats"
 	leaderstats.Parent = player
@@ -33,6 +28,10 @@ local function onJoin(player)
 	end
 end
 
-game.Players.PlayerAdded:Connect(onJoin)
+function PlayerStats.setup(columns, defaultValues)
+	PlayerStats.columns = columns
+	PlayerStats.defaultValues = defaultValues
+	game.Players.PlayerAdded:Connect(PlayerStats.onJoin)
+end
 
 return PlayerStats
