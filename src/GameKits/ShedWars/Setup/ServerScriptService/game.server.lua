@@ -30,3 +30,7 @@ LobbyServer.onReadyStatusChange = function(player, isReady)
 	local nextStatus = isReady and "Ready" or "Not Ready"
 	PlayerStats.setStat(player, "Status", nextStatus)
 end
+
+game.Players.PlayerAdded:Connect(function(player)
+	player:WaitForChild("Character"):SetPrimaryPartCFrame(CFrame.new(240, 60, 180))
+end)

@@ -2,6 +2,7 @@ local WelcomeMessage = require(game.ReplicatedStorage.WelcomeMessage)
 local TeamsClient = require(game.ReplicatedStorage.TeamsClient)
 local LobbyClient = require(game.ReplicatedStorage.LobbyClient)
 local VitalsClient = require(game.ReplicatedStorage.VitalsClient)
+local PlayerRaycaster = require(game.ReplicatedStorage.PlayerRaycaster)
 
 TeamsClient.showDialog()
 
@@ -35,3 +36,15 @@ end
 
 LobbyClient.setup()
 VitalsClient.setup({"Life", "Wood", "Metal"})
+
+PlayerRaycaster.setup(50)
+local spawnParts = PlayerRaycaster.findParts(game.Workspace, "SpawnPlace")
+print("Found spawns", #spawnParts)
+
+local function onHoverSpawn(part, position)
+	print("Hover over!", part, position)
+end
+local function onLeaveSpawn(part, position)
+	print("Leave spawn!", part, position)
+end
+PlayerRaycaster.connectParts(spawnParts, onHoverSpawn, onLeaveSpawn)
