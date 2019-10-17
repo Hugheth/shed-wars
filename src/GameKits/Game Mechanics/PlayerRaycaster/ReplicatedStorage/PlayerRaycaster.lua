@@ -1,5 +1,6 @@
 local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
+local mouse = player:GetMouse()
 
 local camera = workspace.CurrentCamera
 
@@ -9,27 +10,25 @@ local PlayerRaycaster = {
 }
 
 function PlayerRaycaster.onStep()
-	local viewportPoint = camera.ViewportSize / 2
-	local unitRay = camera:ViewportPointToRay(viewportPoint.X, viewportPoint.Y, 0)
+	local unitRay = camera:ViewportPointToRay(mouse.X, mouse.Y, 0)
 	local ray = Ray.new(unitRay.Origin, unitRay.Direction * PlayerRaycaster.maxDistance)
 	local part, position = workspace:FindPartOnRayWithWhitelist(ray, PlayerRaycaster.whitelist)
-	print("found part", part, position)
-	if part then
+	local previousPart = PlayerRaycaster.currentWhitelistPart
+	if previousPart and previousPart ~= part then
+		local previousPartConnections = PlayerRaycaster.connections[previousPart]
+		for _, connection in ipairs(previousPartConnections) do
+			if connection.onLeave then
+				connection.onLeave(PlayerRaycaster.currentWhitelistPart, PlayerRaycaster.currentWhitelistPosition)
+			end
+		end
+	end
+	if part and previousPart ~= part then
 		local partConnections = PlayerRaycaster.connections[part]
 		if partConnections then
 			for _, connection in ipairs(partConnections) do
 				if connection.onEnter then
 					connection.onEnter(part, position)
 				end
-			end
-		end
-	end
-	local previousPart = PlayerRaycaster.currentWhitelistPart
-	if previousPart then
-		local previousPartConnections = PlayerRaycaster.connections[previousPart]
-		for _, connection in ipairs(previousPartConnections) do
-			if connection.onLeave then
-				connection.onLeave(PlayerRaycaster.currentWhitelistPart, PlayerRaycaster.currentWhitelistPosition)
 			end
 		end
 	end
@@ -41,6 +40,16 @@ function PlayerRaycaster.onStep()
 end
 
 function PlayerRaycaster.findParts(root, name)
+	if typeof(root) == "table" then
+		local output = {}
+		for _,rootPart in ipairs(root) do
+			local parts = PlayerRaycaster.findParts(rootPart, name)
+			for _,part in ipairs(parts) do
+				table.insert(output, part)
+			end
+		end
+		return output
+	end
 	local parts = {}
 	for _, object in ipairs(root:GetDescendants()) do
 		if object.Name == name then

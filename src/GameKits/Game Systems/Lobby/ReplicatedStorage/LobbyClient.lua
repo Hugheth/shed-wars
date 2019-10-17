@@ -13,6 +13,14 @@ local LobbyClient = {
 	inGame = LobbyStatus.Value == "InGame"
 }
 
+function LobbyClient.onGameStart(playerInGame)
+	-- Add code here or replace the function to add your own behaviour for this event
+end
+
+function LobbyClient.onGameEnd()
+	-- Add code here or replace the function to add your own behaviour for this event
+end
+
 function LobbyClient.showDialog()
 	if LobbyClient.inGame then
 		return
@@ -32,17 +40,13 @@ end
 function LobbyClient.startGame()
 	LobbyClient.inGame = true
 	LobbyClient.hideDialog()
-	if LobbyClient.onGameStart then
-		LobbyClient.onGameStart(LobbyClient.isReady)
-	end
+	LobbyClient.onGameStart(LobbyClient.isReady)
 end
 
 function LobbyClient.endGame()
 	LobbyClient.isReady = false
 	LobbyClient.inGame = false
-	if LobbyClient.onGameEnd then
-		LobbyClient.onGameEnd()
-	end
+	LobbyClient.onGameEnd()
 end
 
 function LobbyClient.hideDialog()

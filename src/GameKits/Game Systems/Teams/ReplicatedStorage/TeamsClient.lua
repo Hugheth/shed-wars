@@ -13,6 +13,10 @@ local AUTOMATIC = "Automatic"
 local SPACING = 10
 local PADDING = 20
 
+function TeamsClient.onClose(teamName)
+	-- Add code here or replace the function to add your own behaviour for this event
+end
+
 function TeamsClient.showDialog()
 	local contents = TeamDialog.Frame.ContentFrame
 	local label = contents.TeamButton
@@ -26,8 +30,8 @@ function TeamsClient.showDialog()
 	end
 
 	local function onClick(teamName)
-		TeamsClient.selectedTeam = teamName
 		deselectLabels()
+		TeamsClient.selectedTeam = teamName
 		contents[teamName].BackgroundTransparency = 0
 	end
 
@@ -51,7 +55,7 @@ function TeamsClient.showDialog()
 		drawLabel(index, team.Name, team.TeamColor.Color)
 	end
 
-	deselectLabels()
+	onClick(AUTOMATIC)
 
 	local size = (#Teams:GetChildren() + 1) * (label.Size.Y.Offset + SPACING) + 2 * PADDING
 	contents.CanvasSize = UDim2.new(0, 0, 0, size)
@@ -60,6 +64,7 @@ end
 
 function TeamsClient.hideDialog()
 	TeamDialog.Enabled = false
+	TeamsClient.selectedTeam = nil
 	local contents = TeamDialog.Frame.ContentFrame
 	contents[AUTOMATIC]:Destroy()
 	for _, team in ipairs(Teams:GetChildren()) do
@@ -75,10 +80,7 @@ function TeamsClient.chooseTeam()
 	end
 
 	RequestChangeTeam:InvokeServer(teamName)
-
-	if TeamsClient.onTeamChange then
-		TeamsClient.onTeamChange(teamName)
-	end
+	TeamsClient.teamName = teamName
 end
 
 function TeamsClient.autoAssignTeam()
@@ -104,11 +106,9 @@ function TeamsClient.autoAssignTeam()
 end
 
 local function handleClose()
-	TeamsClient.hideDialog()
 	TeamsClient.chooseTeam()
-	if TeamsClient.onClose then
-		TeamsClient.onClose()
-	end
+	TeamsClient.hideDialog()
+	TeamsClient.onClose(TeamsClient.teamName)
 end
 TeamDialog.Frame.JoinButton.MouseButton1Click:Connect(handleClose)
 

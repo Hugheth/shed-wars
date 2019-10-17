@@ -32,5 +32,9 @@ LobbyServer.onReadyStatusChange = function(player, isReady)
 end
 
 game.Players.PlayerAdded:Connect(function(player)
-	player:WaitForChild("Character"):SetPrimaryPartCFrame(CFrame.new(240, 60, 180))
+	player.CharacterAdded:Connect(function(character)
+		wait()
+		character:SetPrimaryPartCFrame(CFrame.new(240, 60, 180))
+	end)
+	
 end)

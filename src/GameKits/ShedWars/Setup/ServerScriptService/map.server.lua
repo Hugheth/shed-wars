@@ -102,6 +102,11 @@ local function drawBuilding(x, y)
 			)
 		)
 	end
+
+	local isRedTeam = y < 3
+	local isBlueTeam = y > 3
+	local buildingName = isRedTeam and "RedShed" or isBlueTeam and "BlueShed" or "NeutralShed"
+
 	local buildingOffset = Vector3.new(roomSize, 24, roomSize)
 	local building =
 		BuildingDrawer.drawBuilding(
@@ -112,17 +117,17 @@ local function drawBuilding(x, y)
 			floorHeight = 16,
 			interiorWallChance = 0.2,
 			position = position + buildingOffset,
-			name = "Shed (" .. x .. "," .. y .. ")",
+			name = buildingName,
 			templates = game.ServerStorage.ShedSet
 		}
 	)
 	local lights = LightManager.findLights(building)
-	if y < 3 then
+	if isRedTeam then
 		LightManager.setColor(lights, Color3.fromRGB(136, 1, 20))
-	elseif y == 3 then
-		LightManager.setColor(lights, Color3.fromRGB(180, 180, 180))
+	elseif isBlueTeam then
+		LightManager.setColor(lights, Color3.fromRGB(1, 136, 136))
 	else
-		LightManager.setColor(lights, Color3.fromRGB(20, 136, 1))
+		LightManager.setColor(lights, Color3.fromRGB(180, 180, 180))
 	end
 	return building
 end

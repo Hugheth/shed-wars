@@ -3,6 +3,10 @@ local WelcomeDialog =
 	error("WelcomeMessage couldn't start because WelcomeDialog is missing from StarterGui")
 local WelcomeMessage = {}
 
+function WelcomeMessage.onClose()
+	-- Add code here or replace the function to add your own behaviour for this event
+end
+
 function WelcomeMessage.show(messages)
 	WelcomeDialog.Frame.ContentFrame.Content.Text = messages[math.random(1, #messages)]
 	WelcomeDialog.Enabled = true
@@ -14,9 +18,7 @@ end
 
 local function handleClose()
 	WelcomeMessage.hide()
-	if WelcomeMessage.onClose then
-		WelcomeMessage.onClose()
-	end
+	WelcomeMessage.onClose()
 end
 WelcomeDialog.Frame.CloseButton.MouseButton1Click:Connect(handleClose)
 
