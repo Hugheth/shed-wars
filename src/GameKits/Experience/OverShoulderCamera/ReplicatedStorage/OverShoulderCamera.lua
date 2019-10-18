@@ -27,11 +27,7 @@ local cameraAngles
 local function calculateClipping(character, rootPosition, targetCFrame)
 	local ray = Ray.new(rootPosition, (targetCFrame.Position - rootPosition))
 
-	local _, hitPosition =
-		workspace:FindPartOnRayWithIgnoreList(
-		ray,
-		{character}
-	)
+	local _, hitPosition = workspace:FindPartOnRayWithIgnoreList(ray, {character})
 
 	local cameraOffset = (hitPosition - targetCFrame.Position)
 
@@ -82,7 +78,7 @@ function OverShoulderCamera.start()
 	wait()
 
 	RunService:BindToRenderStep(
-		"gameCamera",
+		"OverShoulderCamera",
 		Enum.RenderPriority.Camera.Value,
 		function(deltaTime)
 			camera.Focus = camera.CFrame
@@ -122,7 +118,7 @@ end
 function OverShoulderCamera.finish()
 	wait()
 
-	RunService:UnbindFromRenderStep("gameCamera")
+	RunService:UnbindFromRenderStep("OverShoulderCamera")
 	UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 
 	for _, connection in pairs(connections) do

@@ -2,6 +2,7 @@ local LobbyServer = require(game.ReplicatedStorage.LobbyServer)
 local TeamsServer = require(game.ReplicatedStorage.TeamsServer)
 local PlayerStats = require(game.ReplicatedStorage.PlayerStats)
 local VitalsServer = require(game.ReplicatedStorage.VitalsServer)
+local SpectatorModeServer = require(game.ReplicatedStorage.SpectatorModeServer)
 
 LobbyServer.setup(
 	{
@@ -31,10 +32,14 @@ LobbyServer.onReadyStatusChange = function(player, isReady)
 	PlayerStats.setStat(player, "Status", nextStatus)
 end
 
-game.Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(character)
-		wait()
-		character:SetPrimaryPartCFrame(CFrame.new(240, 60, 180))
-	end)
-	
-end)
+game.Players.PlayerAdded:Connect(
+	function(player)
+		player.CharacterAdded:Connect(
+			function(character)
+				wait()
+				character:SetPrimaryPartCFrame(CFrame.new(240, 60, 180))
+			end
+		)
+		SpectatorModeServer.activate(player)
+	end
+)

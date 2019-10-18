@@ -3,8 +3,15 @@ local TeamsClient = require(game.ReplicatedStorage.TeamsClient)
 local LobbyClient = require(game.ReplicatedStorage.LobbyClient)
 local VitalsClient = require(game.ReplicatedStorage.VitalsClient)
 local PlayerRaycaster = require(game.ReplicatedStorage.PlayerRaycaster)
+local SpectatorModeClient = require(game.ReplicatedStorage.SpectatorModeClient)
 local OverShoulderCamera = require(game.ReplicatedStorage.OverShoulderCamera)
 
+SpectatorModeClient.setup()
+
+local buildings = game.Workspace:WaitForChild("Buildings", 1000)
+local LightManager = require(game.ReplicatedStorage.LightManager)
+local lights = LightManager.findLights(buildings)
+LightManager.pulsate(lights)
 TeamsClient.showDialog()
 
 TeamsClient.onClose = function(teamName)
