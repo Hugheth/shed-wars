@@ -1,18 +1,12 @@
 local RunService = game:GetService("RunService")
+local findParts = require(game.ReplicatedStorage.FindParts)
 local LightManager = {
 	colors = {},
 	pulsating = {}
 }
 
 function LightManager.findLights(root, name)
-	name = name or "Light"
-	local lights = {}
-	for _, object in ipairs(root:GetDescendants()) do
-		if object.Name == name then
-			table.insert(lights, object)
-		end
-	end
-	return lights
+	return findParts(root, name or "Light")
 end
 
 function LightManager.turnOff(lights)

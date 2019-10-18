@@ -1,6 +1,9 @@
 local FloatingPlayer = {}
 
 function FloatingPlayer.start(initialHeight)
+	if FloatingPlayer.bodyPosition then
+		return
+	end
 	local player = game.Players.LocalPlayer
 	local character = player.Character or player.CharacterAdded:Wait()
 	local humanoid = character:WaitForChild("Humanoid")
@@ -15,8 +18,10 @@ function FloatingPlayer.start(initialHeight)
 end
 
 function FloatingPlayer.stop()
-	FloatingPlayer.bodyPosition:Destroy()
-	FloatingPlayer.bodyPosition = nil
+	if FloatingPlayer.bodyPosition then
+		FloatingPlayer.bodyPosition:Destroy()
+		FloatingPlayer.bodyPosition = nil
+	end
 end
 
 return FloatingPlayer

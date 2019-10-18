@@ -10,15 +10,18 @@ local PlayerRaycaster = {
 }
 
 function PlayerRaycaster.onStep()
-	local unitRay = camera:ViewportPointToRay(mouse.X, mouse.Y, 0)
+	local unitRay = camera:ScreenPointToRay(mouse.X, mouse.Y, 0)
 	local ray = Ray.new(unitRay.Origin, unitRay.Direction * PlayerRaycaster.maxDistance)
 	local part, position = workspace:FindPartOnRayWithWhitelist(ray, PlayerRaycaster.whitelist)
 	local previousPart = PlayerRaycaster.currentWhitelistPart
 	if previousPart and previousPart ~= part then
 		local previousPartConnections = PlayerRaycaster.connections[previousPart]
-		for _, connection in ipairs(previousPartConnections) do
-			if connection.onLeave then
-				connection.onLeave(PlayerRaycaster.currentWhitelistPart, PlayerRaycaster.currentWhitelistPosition)
+		if previousPartConnections then
+			for _, connection in ipairs(previousPartConnections) do
+				if connection.onLeave then
+					connection.hit = nil
+					connection.onLeave(PlayerRaycaster.currentWhitelistPart, PlayerRaycaster.currentWhitelistPosition)
+				end
 			end
 		end
 	end
@@ -27,6 +30,7 @@ function PlayerRaycaster.onStep()
 		if partConnections then
 			for _, connection in ipairs(partConnections) do
 				if connection.onEnter then
+					connection.hit = part
 					connection.onEnter(part, position)
 				end
 			end
@@ -39,31 +43,11 @@ function PlayerRaycaster.onStep()
 	PlayerRaycaster.currentPosition = currentPosition
 end
 
-function PlayerRaycaster.findParts(root, name)
-	if typeof(root) == "table" then
-		local output = {}
-		for _,rootPart in ipairs(root) do
-			local parts = PlayerRaycaster.findParts(rootPart, name)
-			for _,part in ipairs(parts) do
-				table.insert(output, part)
-			end
-		end
-		return output
-	end
-	local parts = {}
-	for _, object in ipairs(root:GetDescendants()) do
-		if object.Name == name then
-			table.insert(parts, object)
-		end
-	end
-	return parts
-end
-
-function PlayerRaycaster.connectParts(parts, onEnter, onLeave)
+function PlayerRaycaster.addHandler(parts, onEnter, onLeave)
 	local connection = {
 		onEnter = onEnter,
 		onLeave = onLeave,
-		disconnect = PlayerRaycaster.disconnect
+		removeHandler = PlayerRaycaster.removeHandler
 	}
 	for _, part in ipairs(parts) do
 		if not PlayerRaycaster.connections[part] then
@@ -75,8 +59,9 @@ function PlayerRaycaster.connectParts(parts, onEnter, onLeave)
 	return connection
 end
 
-function PlayerRaycaster.disconnect(connection)
+function PlayerRaycaster.removeHandler(connection)
 	local newConnections = {}
+	local newWhitelist = {}
 	for part, connections in pairs(PlayerRaycaster.connections) do
 		local newPartConnections = {}
 		for _, partConnection in ipairs(connections) do
@@ -86,9 +71,11 @@ function PlayerRaycaster.disconnect(connection)
 		end
 		if #newPartConnections > 0 then
 			newConnections[part] = newPartConnections
+			table.insert(newWhitelist, part)
 		end
 	end
 	PlayerRaycaster.connections = newConnections
+	PlayerRaycaster.whitelist = newWhitelist
 end
 
 function PlayerRaycaster.setup(maxDistance)

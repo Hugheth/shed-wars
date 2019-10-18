@@ -4,7 +4,9 @@ local FloatingPlayer = require(game.ReplicatedStorage.FloatingPlayer)
 local player = game.Players.LocalPlayer
 local isSpectating = player:WaitForChild("IsSpectating")
 
-local SpectatorModeClient = {}
+local SpectatorModeClient = {
+	isSpectating = false
+}
 
 function SpectatorModeClient.setup()
 	SpectatorModeClient.updateFloating()
@@ -28,12 +30,20 @@ function SpectatorModeClient.onStep(step)
 end
 
 function SpectatorModeClient.start()
+	if SpectatorModeClient.isSpectating then
+		return
+	end
+	SpectatorModeClient.isSpectating = true
 	FloatingPlayer.start(10)
 	player.Character.Humanoid.WalkSpeed = 30
 	SpectatorModeClient.heartbeatConnection = RunService.Heartbeat:Connect(SpectatorModeClient.onStep)
 end
 
 function SpectatorModeClient.stop()
+	if not SpectatorModeClient.isSpectating then
+		return
+	end
+	SpectatorModeClient.isSpectating = false
 	FloatingPlayer.stop()
 	player.Character.Humanoid.WalkSpeed = 16
 	SpectatorModeClient.heartbeatConnection:Disconnect()

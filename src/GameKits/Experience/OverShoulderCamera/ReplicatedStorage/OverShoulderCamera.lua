@@ -115,9 +115,9 @@ end
 --[[
 	Cleans up the bound actions
 ]]
-function OverShoulderCamera.finish()
+function OverShoulderCamera.stop()
 	wait()
-
+	UserInputService.MouseIconEnabled = true
 	RunService:UnbindFromRenderStep("OverShoulderCamera")
 	UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 

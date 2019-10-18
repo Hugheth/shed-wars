@@ -11,10 +11,6 @@ local LobbyServer = {
 	inGame = false
 }
 
-function LobbyServer.onPlayerJoin()
-	-- Add code here or replace the function to add your own behaviour for this event
-end
-
 function LobbyServer.onGameStart()
 	-- Add code here or replace the function to add your own behaviour for this event
 end
@@ -26,9 +22,6 @@ end
 function LobbyServer.onJoin(player)
 	LobbyServer.readyPlayers[player] = false
 	LobbyServer.updateStatus()
-	if not LobbyServer.inGame then
-		LobbyServer.onPlayerJoin(player, LobbyServer.inGame)
-	end
 end
 
 function LobbyServer.onLeave(player)
@@ -50,6 +43,13 @@ end
 function LobbyServer.startGame()
 	LobbyStatus.Value = "InGame"
 	LobbyServer.inGame = true
+	local players = {}
+	for player, isReady in pairs(LobbyServer.readyPlayers) do
+		if isReady then
+			table.insert(players, player)
+		end
+	end
+	LobbyServer.inGamePlayers = players
 	LobbyServer.onGameStart()
 end
 
