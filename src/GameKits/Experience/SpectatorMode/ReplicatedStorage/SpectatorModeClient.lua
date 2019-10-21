@@ -1,3 +1,10 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Uses another game kit (FloatingPlayer)
+	- Has an active / passive state
+	- Is primarily controlled from the server
+]]
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local FloatingPlayer = require(game.ReplicatedStorage.FloatingPlayer)

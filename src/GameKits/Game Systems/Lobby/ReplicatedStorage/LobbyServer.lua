@@ -1,3 +1,10 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Maintains its own state which can be publicly queried
+	- Officiates choices made on the client at the server interface
+	- Provides event hooks that can be overwritten for user's own behaviour
+]]
 local RequestChangeReadyStatus =
 	game.ReplicatedStorage:WaitForChild("RequestChangeReadyStatus", 10) or
 	error("Teams couldn't start because RequestChangeReadyStatus is missing from ReplicatedStorage")

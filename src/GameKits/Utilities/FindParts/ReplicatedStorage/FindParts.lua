@@ -1,3 +1,7 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Provides a minimal re-usable function that provides common functionality
+]]
 local function findParts(root, name)
 	if typeof(root) == "table" then
 		local output = {}

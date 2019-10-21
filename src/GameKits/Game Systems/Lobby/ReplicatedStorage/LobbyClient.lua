@@ -1,3 +1,10 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Uses other game kits to display common UI
+	- Provides state in the data model that can be listened to on the client
+	- Allows the user to enhance the game kit with optional functionality (showOnRespawn)
+]]
 local LobbyDialog =
 	game.Players.LocalPlayer.PlayerGui:WaitForChild("LobbyDialog", 10) or
 	error("LobbyClient couldn't start because LobbyDialog is missing from StarterGui")

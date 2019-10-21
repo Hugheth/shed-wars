@@ -1,4 +1,9 @@
 --[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Is purely client-size
+	- Has an active / passive state
+]]
+--[[
 	Camera state that sets the camera to a specified CFrame, but allows the user to move through the
 	possible CFrame locations by clicking.
 ]]

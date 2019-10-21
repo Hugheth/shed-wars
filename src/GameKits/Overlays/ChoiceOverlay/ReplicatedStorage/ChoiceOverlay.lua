@@ -1,3 +1,9 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Provides objects that methods can be called on without employing a metatable or class infrastructure
+	- Provides objects that event hooks can bu customized for
+	- Generalizes reuse by other game kits or separate game systems
+]]
 local ChoiceDialog =
 	game.Players.LocalPlayer.PlayerGui:WaitForChild("ChoiceDialog", 10) or
 	error("ChoiceOverlay couldn't start because ChoiceDialog is missing from StarterGui")

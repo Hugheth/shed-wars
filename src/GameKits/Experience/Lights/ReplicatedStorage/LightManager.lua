@@ -1,3 +1,10 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Is purely client-side
+	- Adds behaviour to any number of game objects (Lights)
+	- Recommends the use of a small library function (FindParts)
+		- But a Light could equally have a LocalScript which calls into the module itself
+]]
 local RunService = game:GetService("RunService")
 local findParts = require(game.ReplicatedStorage.FindParts)
 local LightManager = {

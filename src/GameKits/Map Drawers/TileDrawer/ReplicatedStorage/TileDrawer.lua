@@ -1,3 +1,9 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Uses the result of other game kits (Maze or Cave generators)
+	- Implements a complex piece of functionality but provides a simple interface
+	- Can use visual elements that have been customized
+]]
 local MazeDrawer = {}
 
 local MazeGenerator = require(game.ReplicatedStorage.MazeGenerator)

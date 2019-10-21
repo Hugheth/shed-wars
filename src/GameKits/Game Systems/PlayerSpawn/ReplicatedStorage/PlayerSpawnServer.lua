@@ -1,3 +1,11 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Maintains its own state which can be publicly queried
+	- Provides state in the data model that can be listened to on the client
+	- Officiates choices made on the client at the server interface
+	- Provides event hooks that can be overwritten for user's own behaviour
+]]
 local RequestChangeSpawn =
 	game.ReplicatedStorage:WaitForChild("RequestChangeSpawn", 10) or
 	error("PlayerSpawnServer couldn't start because RequestChangeSpawn is missing from ReplicatedStorage")

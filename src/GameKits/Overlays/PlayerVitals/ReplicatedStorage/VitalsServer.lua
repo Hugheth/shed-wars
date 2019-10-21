@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Provides state in the data model that can be changed on the server and listened to on the client
+]]
 local VitalsServer = {}
 
 function VitalsServer.onJoin(player)

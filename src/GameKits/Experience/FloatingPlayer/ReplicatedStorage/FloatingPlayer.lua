@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Controls the player on the client. This might be better implemented on the server.
+	- Has an active / passive state
+]]
 local FloatingPlayer = {}
 
 function FloatingPlayer.start(initialHeight)

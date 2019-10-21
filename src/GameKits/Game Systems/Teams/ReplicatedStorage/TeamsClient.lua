@@ -1,3 +1,9 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Uses other game kits to display common UI
+	- Allows the user to enhance the game kit with optional functionality (automatic assignment)
+]]
 local Teams = game:GetService("Teams")
 local Players = game:GetService("Players")
 local ChoiceOverlay = require(game.ReplicatedStorage.ChoiceOverlay)

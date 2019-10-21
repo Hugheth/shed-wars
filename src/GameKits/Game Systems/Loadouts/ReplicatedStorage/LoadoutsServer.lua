@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Officiates choices made on the client at the server interface
+]]
 local Loadouts =
 	game.ReplicatedStorage:WaitForChild("Loadouts", 10) or
 	error("Loadouts couldn't start because Loadout is missing from ReplicatedStorage")

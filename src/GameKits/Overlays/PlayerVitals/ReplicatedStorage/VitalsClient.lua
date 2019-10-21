@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Measures UI to fit content dynamically without a library
+]]
 local TextService = game:GetService("TextService")
 local VitalsOverlay =
 	game.Players.LocalPlayer.PlayerGui:WaitForChild("VitalsOverlay", 10) or

@@ -1,3 +1,9 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Provides an "oracle" that manages a system in Roblox in one place
+	- Allows disparate game kits or game systems to interface with each other
+	- Provides an API to add / remove listeners to the currently selected item
+]]
 local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
 local mouse = player:GetMouse()

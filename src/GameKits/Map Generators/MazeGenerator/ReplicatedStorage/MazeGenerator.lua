@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Produces a result that can be used by other game kits (Tile or Building drawers)
+	- Implements a complex piece of functionality but provides a simple interface
+]]
 local MazeGenerator = {}
 
 -- Store the different directions that you can go in the maze

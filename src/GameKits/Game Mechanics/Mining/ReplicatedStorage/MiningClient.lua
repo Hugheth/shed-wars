@@ -1,3 +1,10 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Spans the client and the server
+	- Uses another "oracle" game kit that takes ownership of a system in Roblox (PlayerRaycaster)
+	- Takes a configuration function. This could alternatively be implemented as an overridden default or included in an options table input.
+	- Has an active / passive state
+]]
 local UserInputService = game:GetService("UserInputService")
 local RequestMine =
 	game.ReplicatedStorage:WaitForChild("RequestMine", 10) or
