@@ -4,6 +4,7 @@ local PlayerStats = require(game.ReplicatedStorage.PlayerStats)
 local PlayerSpawnServer = require(game.ReplicatedStorage.PlayerSpawnServer)
 local LoadoutsServer = require(game.ReplicatedStorage.LoadoutsServer)
 local VitalsServer = require(game.ReplicatedStorage.VitalsServer)
+local MiningServer = require(game.ReplicatedStorage.MiningServer)
 local SpectatorModeServer = require(game.ReplicatedStorage.SpectatorModeServer)
 
 LobbyServer.setup(
@@ -12,6 +13,7 @@ LobbyServer.setup(
 		readyTime = 4
 	}
 )
+MiningServer.setup()
 TeamsServer.setup()
 PlayerStats.setup(
 	{"Status", "Deaths"},
@@ -73,11 +75,21 @@ game.Players.PlayerAdded:Connect(
 				PlayerStats.setStat(player, "Status", "Alive")
 			end
 		)
+		player.Character.Humanoid.HealthChanged:Connect(
+			function(health)
+				if health == 0 then
+					PlayerStats.setStat(player, "Status", "Dead")
+				end
+			end
+		)
 		player.CharacterRemoving:Connect(
 			function(character)
-				PlayerStats.setStat(player, "Status", "Dead")
 				PlayerStats.setStat(player, "Deaths", PlayerStats.getStat(player, "Deaths") + 1)
 			end
 		)
 	end
 )
+
+MiningServer.onMine = function(player)
+	player.Wood.Value = player.Wood.Value + 50
+end

@@ -7,6 +7,7 @@ local SpectatorModeClient = require(game.ReplicatedStorage.SpectatorModeClient)
 local PlayerSpawnClient = require(game.ReplicatedStorage.PlayerSpawnClient)
 local OverShoulderCamera = require(game.ReplicatedStorage.OverShoulderCamera)
 local LoadoutsClient = require(game.ReplicatedStorage.LoadoutsClient)
+local MiningClient = require(game.ReplicatedStorage.MiningClient)
 local findParts = require(game.ReplicatedStorage.FindParts)
 
 SpectatorModeClient.setup()
@@ -65,10 +66,17 @@ PlayerSpawnClient.onSpawnChange = function()
 	LoadoutsClient.showOnRespawn()
 end
 
+local function getMineParts()
+	return findParts(game.Workspace, "Wood")
+end
+
+MiningClient.setup(getMineParts)
+
 function LoadoutsClient.onShowDialog()
 	OverShoulderCamera.stop()
 end
 
 function LoadoutsClient.onLoadoutChange()
 	OverShoulderCamera.start()
+	MiningClient.start()
 end

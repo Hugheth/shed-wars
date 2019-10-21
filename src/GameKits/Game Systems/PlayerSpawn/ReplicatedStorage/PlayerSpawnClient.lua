@@ -3,10 +3,10 @@ local PlayerRaycaster = require(game.ReplicatedStorage.PlayerRaycaster)
 local findParts = require(game.ReplicatedStorage.FindParts)
 local SpawnOverlay =
 	game.Players.LocalPlayer.PlayerGui:WaitForChild("SpawnOverlay", 10) or
-	error("MessageOverlay couldn't start because SpawnOverlay is missing from StarterGui")
+	error("PlayerSpawnClient couldn't start because SpawnOverlay is missing from StarterGui")
 local RequestChangeSpawn =
 	game.ReplicatedStorage:WaitForChild("RequestChangeSpawn", 10) or
-	error("MessageOverlay couldn't start because RequestChangeSpawn is missing from StarterGui")
+	error("PlayerSpawnClient couldn't start because RequestChangeSpawn is missing from StarterGui")
 local isSpawning = game.Players.LocalPlayer:WaitForChild("IsSpawning")
 
 local PlayerSpawnClient = {
@@ -49,7 +49,7 @@ function PlayerSpawnClient.onClick(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		local spawnPart = PlayerSpawnClient.raycastHandler.hit
 		local spawnModel = spawnPart and spawnPart.Parent
-		if spawnPart.Parent then
+		if spawnModel then
 			RequestChangeSpawn:InvokeServer(spawnModel)
 			PlayerSpawnClient.onSpawnChange(spawnModel)
 		end
@@ -89,10 +89,10 @@ function PlayerSpawnClient.flashText()
 	spawn(
 		function()
 			while PlayerSpawnClient.isSpawning do
+				SpawnOverlay.Enabled = true
 				wait(0.5)
 				SpawnOverlay.Enabled = false
 				wait(0.2)
-				SpawnOverlay.Enabled = true
 			end
 		end
 	)

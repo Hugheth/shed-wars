@@ -47,8 +47,8 @@ function LoadoutsClient.showDialog()
 	LoadoutsClient.onShowDialog()
 end
 
-function LoadoutsClient.chooseLoadout(loadoutName)
-	RequestChangeLoadout:InvokeServer(loadoutName)
+function LoadoutsClient.chooseLoadout(choice)
+	RequestChangeLoadout:InvokeServer(choice.name)
 	LoadoutsClient.onLoadoutChange()
 end
 
