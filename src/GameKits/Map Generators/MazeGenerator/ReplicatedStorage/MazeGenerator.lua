@@ -1,3 +1,8 @@
+--[[
+	The purpose of this module is to provide examples of a game kit that:
+	- Produces a result that can be used by other game kits (Tile or Building drawers)
+	- Implements a complex piece of functionality but provides a simple interface
+]]
 local MazeGenerator = {}
 
 -- Store the different directions that you can go in the maze
@@ -14,17 +19,18 @@ end
 
 function MazeGenerator.generateMaze(options)
 	-- Move the options to variables as they are easier to work with
-	local width = options.width
-	local height = options.height
+	local sizeX = options.sizeX
+	local sizeY = options.sizeY
 	local branchingChance = options.branchingChance or 0
-	local blockWidth = options.blockWidth or 1
-	local blockHeight = options.blockHeight or 1
+	local blockSizeX = options.blockSizeX or 1
+	local blockSizeY = options.blockSizeY or 1
+	local random = options.random or Random.new()
 
-	-- Warn any of the inputs are wrongs
-	assert(type(width) == "number" and width > 0, "The width of the maze must be a positive integer")
-	assert(type(height) == "number" and height > 0, "The height of the maze must be a positive integer")
-	assert(type(blockWidth) == "number" and blockWidth > 0, "The blockWidth of the maze must be a positive integer")
-	assert(type(blockHeight) == "number" and blockHeight > 0, "The blockHeight of the maze must be a positive integer")
+	-- Ensure that the inputs are valid
+	assert(type(sizeX) == "number" and sizeX > 0, "The sizeX of the maze must be a positive integer")
+	assert(type(sizeY) == "number" and sizeY > 0, "The sizeY of the maze must be a positive integer")
+	assert(type(blockSizeX) == "number" and blockSizeX > 0, "The blockSizeX of the maze must be a positive integer")
+	assert(type(blockSizeY) == "number" and blockSizeY > 0, "The blockSizeY of the maze must be a positive integer")
 	assert(
 		type(branchingChance) == "number" and branchingChance >= 0 and branchingChance <= 1,
 		"The branching chance must be a number between 0 and 1"
@@ -34,11 +40,11 @@ function MazeGenerator.generateMaze(options)
 	local walls = {}
 
 	-- Let's start in the center of the maze
-	local middleX = width / 2
-	local middleY = height / 2
+	local middleX = sizeX / 2
+	local middleY = sizeY / 2
 	-- Pick a cell which isn't in a wall
-	local emptyX = middleX - middleX % blockWidth + 1
-	local emptyY = middleY - middleY % blockHeight + 1
+	local emptyX = middleX - middleX % blockSizeX + 1
+	local emptyY = middleY - middleY % blockSizeY + 1
 	local firstCell = Vector2.new(emptyX, emptyY)
 
 	-- Store a list of cells we want to visit in the maze
@@ -52,7 +58,7 @@ function MazeGenerator.generateMaze(options)
 		if #cells < 2 then
 			return
 		end
-		local nextIndex = math.random(1, #cells)
+		local nextIndex = random:NextInteger(1, #cells)
 		local previousCell = cells[#cells]
 		cells[#cells] = cells[nextIndex]
 		cells[nextIndex] = previousCell
@@ -69,9 +75,9 @@ function MazeGenerator.generateMaze(options)
 		for i, direction in ipairs(MazeGenerator.DIRECTIONS) do
 			local adjacent = cell + direction
 			-- Check that this cell is in the maze
-			local isInside = MazeGenerator.cellIsInside(adjacent, width, height)
+			local isInside = MazeGenerator.cellIsInside(adjacent, sizeX, sizeY)
 			-- Check that the cell is empty
-			local isEmpty = not MazeGenerator.cellIsWall(adjacent, blockWidth, blockHeight)
+			local isEmpty = not MazeGenerator.cellIsWall(adjacent, blockSizeX, blockSizeY)
 			if isInside and isEmpty then
 				-- Locate the wall halfway between the two cells
 				local wallPosition = (adjacent + cell) / 2
@@ -87,10 +93,11 @@ function MazeGenerator.generateMaze(options)
 				end
 			end
 		end
+
 		-- Check that there is a free direction to go in
 		if #adjacents > 0 then
 			-- Pick a random adjacent cell to move to next
-			local nextIndex = math.random(1, #adjacents)
+			local nextIndex = random:NextInteger(1, #adjacents)
 			local nextCell = adjacents[nextIndex]
 			table.insert(cells, nextCell)
 
@@ -100,7 +107,7 @@ function MazeGenerator.generateMaze(options)
 			walls[wallKey] = false
 
 			-- Choose a new cell if the branching chance is exceeded
-			if math.random() < branchingChance then
+			if random:NextNumber() < branchingChance then
 				chooseNewCell()
 			end
 		else
@@ -113,19 +120,19 @@ function MazeGenerator.generateMaze(options)
 
 	return {
 		walls = walls,
-		width = width,
-		height = height
+		sizeX = sizeX,
+		sizeY = sizeY
 	}
 end
 
-function MazeGenerator.cellIsWall(cell, blockWidth, blockHeight)
-	return (cell.X - 1) % blockWidth ~= 0 and (cell.Y - 1) % blockHeight ~= 0
+function MazeGenerator.cellIsWall(cell, blockSizeX, blockSizeY)
+	return (cell.X - 1) % blockSizeX ~= 0 and (cell.Y - 1) % blockSizeY ~= 0
 end
 
-function MazeGenerator.cellIsInside(cell, width, height)
-	if cell.X < 1 or cell.X > width then
+function MazeGenerator.cellIsInside(cell, sizeX, sizeY)
+	if cell.X < 1 or cell.X > sizeX then
 		return false
-	elseif cell.Y < 1 or cell.Y > height then
+	elseif cell.Y < 1 or cell.Y > sizeY then
 		return false
 	else
 		return true
@@ -135,8 +142,8 @@ end
 -- Print a maze as an ascii picture
 function MazeGenerator.printMaze(maze)
 	local output = ""
-	for i = 0.5, maze.width + 0.5, 0.5 do
-		for j = 0.5, maze.height + 0.5, 0.5 do
+	for i = 0.5, maze.sizeX + 0.5, 0.5 do
+		for j = 0.5, maze.sizeY + 0.5, 0.5 do
 			local fractionX = math.floor(i) ~= i
 			local fractionY = math.floor(j) ~= j
 			local symbol

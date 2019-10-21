@@ -1,0 +1,24 @@
+-- local MazeGenerator = require(game.ReplicatedStorage.MazeGenerator)
+-- local TileDrawer = require(game.ReplicatedStorage.TileDrawer)
+-- local maze =
+-- 	MazeGenerator.generateMaze(
+-- 	{
+-- 		sizeX = 9,
+-- 		sizeY = 9,
+-- 		branchingChance = 0.3,
+-- 		blockSizeX = 2,
+-- 		blockSizeY = 2
+-- 	}
+-- )
+-- print(MazeGenerator.printMaze(maze))
+-- local tiles =
+-- 	TileDrawer.drawTiles(
+-- 	{
+-- 		maze = maze,
+-- 		tileSizeX = 32,
+-- 		tileSizeY = 32,
+-- 		name = "My City",
+-- 		templates = game.ServerStorage.RoadTiles
+-- 	}
+-- )
+-- tiles.Parent = game.Workspace
